@@ -3,7 +3,10 @@
 #include <string.h>
 
 typedef unsigned char u8;
-typedef unsigned long ulong;
+typedef unsigned long long ulong;
+
+#define GB 0x40000000
+#define MB 0x100000
 
 void createOut(u8 numb, const char* src, FILE** out) {
     static char* dst = NULL;
@@ -55,7 +58,7 @@ int split(const char* src, ulong blocksize, ulong splitsize) {
 
 int main(int argc, char** argv)
 {
-    int ret = 0;
+    int ret = 0, size;
     ulong splitsize;
 
     if (argc < 3) {
@@ -63,14 +66,14 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    if ((splitsize = atoi(argv[2])) == 0) {
+    if ((size = atoi(argv[2])) == 0) {
         printf("Parsing failed");
         return -1;
     }
 
-    splitsize *= 0x400 * 0x400 * 0x400;
+    splitsize = (ulong)GB * (ulong)size;
 
-    if ((ret = split(argv[1], 0x400 * 0x400 * 64, splitsize)))
+    if ((ret = split(argv[1], MB * 64, splitsize)))
         printf("Failed to open in file");
     else
         printf("Done!              ");
